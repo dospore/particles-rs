@@ -1,0 +1,16 @@
+{
+  "name": "particles-rs",
+  "collaborators": [
+    "Nick Fitzgerald <fitzgen@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "particles_rs_bg.wasm",
+    "particles_rs.js",
+    "particles_rs_bg.js",
+    "particles_rs.d.ts"
+  ],
+  "module": "particles_rs.js",
+  "types": "particles_rs.d.ts",
+  "sideEffects": false
+}
