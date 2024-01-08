@@ -2,35 +2,33 @@
 
 ### A lightweight wasm + javascript library for creating particles.
 
-This library has been ported from <a href="http://vincentgarreau.com/particles.js/" target="_blank"><img src="http://vincentgarreau.com/particles.js/assets/img/github-screen.jpg" alt="particles.js generator" />particles.js</a>. particles.rs is simply a learning excercise for me to familiarise myself with wasm and rust. This was not created for any performance reasons. Both packages perform more or less the same. 
+This library has been ported from <a href="http://vincentgarreau.com/particles.js/" target="_blank">particles.js</a>. particles.rs is simply a learning excercise for me to familiarise myself with wasm and rust. This was not created for any performance reasons. Both packages perform more or less the same. 
+
+This project uses the exact same configuration format as the original <a href="http://vincentgarreau.com/particles.js/" target="_blank">particles.js</a>
 
 ------------------------------
 ### `Demo / Generator`
 
 Configure, export, and share your particles.js configuration on CodePen: <br />
-http://vincentgarreau.com/particles.js/
+TODO get url
 
-CodePen demo: <br />
-http://codepen.io/VincentGarreau/pen/pnlso
 
 -------------------------------
 ### `Usage`
 
-Load particles.js and configure the particles:
+Load particles.rs and configure the particles:
 
 **index.html**
 ```html
-<div id="particles-js"></div>
+<div id="particles-rs"></div>
 
-<script src="particles.js"></script>
+<script src="particles-rs.js"></script>
 ```
 
 **app.js**
+TODO example loading
 ```javascript
 /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
-particlesJS.load('particles-js', 'assets/particles.json', function() {
-  console.log('callback - particles.js config loaded');
-});
 ```
 
 **particles.json**
@@ -213,31 +211,10 @@ key | option type / notes | example
 ### `Packages install`
 
 ##### ***npm***
-https://www.npmjs.com/package/particles.js
-```
-npm install particles.js
-```
+TODO npm package
 
-##### ***Bower***
 ```
-bower install particles.js --save
-```
-
-##### ***Rails Assets***
-```
-gem 'rails-assets-particles.js'
-```
-
-##### ***Meteor***
-https://atmospherejs.com/newswim/particles
-```
-meteor add newswim:particles
+npm install particles.rs
 ```
 
 -------------------------------
-
-### `Hosting / CDN`
-
-***Please use this host or your own to load particles.js on your projects***
-
-http://www.jsdelivr.com/#!particles.js
