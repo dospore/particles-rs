@@ -1,5 +1,5 @@
 [package]
-name = "wasm-game-of-life"
+name = "particles-rs"
 version = "0.1.0"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 
@@ -12,6 +12,8 @@ default = ["console_error_panic_hook"]
 [dependencies]
 cfg-if = "0.1.2"
 wasm-bindgen = "0.2"
+rand = "0.8"
+getrandom = { version = "0.2", features = ["js"] }
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

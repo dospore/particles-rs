@@ -1,12 +1,14 @@
 extern crate cfg_if;
 extern crate wasm_bindgen;
 extern crate web_sys;
+extern crate rand;
 
 mod utils;
 
 use std::fmt;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
+use rand::Rng;
 
 pub struct Timer<'a> {
     name: &'a str,
@@ -33,200 +35,255 @@ pub enum Cell {
     Alive = 1,
 }
 
-impl Cell {
-    fn toggle(&mut self) {
-        *self = match *self {
-            Cell::Dead => Cell::Alive,
-            Cell::Alive => Cell::Dead,
-        };
-    }
+#[wasm_bindgen]
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Particle {
+    x: f32,
+    y: f32,
+    v_x: f32,
+    v_y: f32 
 }
 
 #[wasm_bindgen]
-pub struct Universe {
-    width: u32,
-    height: u32,
-    cells: Vec<Cell>,
+pub struct Line {
+    p1_x: f32,
+    p2_x: f32,
+    p1_y: f32,
+    p2_y: f32,
+    opacity: f32
 }
 
-impl Universe {
-    fn get_index(&self, row: u32, column: u32) -> usize {
-        (row * self.width + column) as usize
-    }
+#[wasm_bindgen]
+impl Particle {
+    // pub fn get_x(&self) -> u32 {
+        // self.x
+    // }
 
-    /// Get the dead and alive values of the entire universe.
-    pub fn get_cells(&self) -> &[Cell] {
-        &self.cells
-    }
+    // pub fn get_y(&self) -> u32 {
+        // self.y
+    // }
+}
 
-    /// Set cells to be alive in a universe by passing the row and column
-    /// of each cell as an array.
-    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
-        for (row, col) in cells.iter().cloned() {
-            let idx = self.get_index(row, col);
-            self.cells[idx] = Cell::Alive;
+#[wasm_bindgen]
+#[derive(Default)]
+pub struct Particles {
+    c: Config,
+
+    particles: Vec<Particle>,
+    lines: Vec<Line>
+}
+
+#[wasm_bindgen]
+#[derive(Default)]
+pub struct Config {
+    opacity: f32,
+    num_particles: u32,
+    distance: f32,
+    width: u32,
+    height: u32
+}
+
+#[wasm_bindgen]
+impl Config {
+    // TODO parse js object into rust
+    pub fn new(
+        opacity: f32,
+        num_particles: u32,
+        distance: f32,
+        width: u32,
+        height: u32
+    ) -> Self {
+        Config {
+            opacity,
+            num_particles,
+            distance,
+            width,
+            height
         }
-    }
-
-    fn live_neighbor_count(&self, row: u32, column: u32) -> u8 {
-        let mut count = 0;
-
-        let north = if row == 0 {
-            self.height - 1
-        } else {
-            row - 1
-        };
-
-        let south = if row == self.height - 1 {
-            0
-        } else {
-            row + 1
-        };
-
-        let west = if column == 0 {
-            self.width - 1
-        } else {
-            column - 1
-        };
-
-        let east = if column == self.width - 1 {
-            0
-        } else {
-            column + 1
-        };
-
-        let nw = self.get_index(north, west);
-        count += self.cells[nw] as u8;
-
-        let n = self.get_index(north, column);
-        count += self.cells[n] as u8;
-
-        let ne = self.get_index(north, east);
-        count += self.cells[ne] as u8;
-
-        let w = self.get_index(row, west);
-        count += self.cells[w] as u8;
-
-        let e = self.get_index(row, east);
-        count += self.cells[e] as u8;
-
-        let sw = self.get_index(south, west);
-        count += self.cells[sw] as u8;
-
-        let s = self.get_index(south, column);
-        count += self.cells[s] as u8;
-
-        let se = self.get_index(south, east);
-        count += self.cells[se] as u8;
-
-        count
     }
 }
 
 /// Public methods, exported to JavaScript.
 #[wasm_bindgen]
-impl Universe {
+impl Particles {
     pub fn tick(&mut self) {
         // let _timer = Timer::new("Universe::tick");
 
-        let mut next = self.cells.clone();
+        let mut lines: Vec<Line> = vec!();
+        let mut next_particles: Vec<&Particle> = vec!();
 
-        for row in 0..self.height {
-            for col in 0..self.width {
-                let idx = self.get_index(row, col);
-                let cell = self.cells[idx];
-                let live_neighbors = self.live_neighbor_count(row, col);
+        for particle in self.particles.iter_mut() {
+            // let mut particle = particle; 
+            particle.y += particle.v_y;
 
-                let next_cell = match (cell, live_neighbors) {
-                    // Rule 1: Any live cell with fewer than two live neighbours
-                    // dies, as if caused by underpopulation.
-                    (Cell::Alive, x) if x < 2 => Cell::Dead,
-                    // Rule 2: Any live cell with two or three live neighbours
-                    // lives on to the next generation.
-                    (Cell::Alive, 2) | (Cell::Alive, 3) => Cell::Alive,
-                    // Rule 3: Any live cell with more than three live
-                    // neighbours dies, as if by overpopulation.
-                    (Cell::Alive, x) if x > 3 => Cell::Dead,
-                    // Rule 4: Any dead cell with exactly three live neighbours
-                    // becomes a live cell, as if by reproduction.
-                    (Cell::Dead, 3) => Cell::Alive,
-                    // All other cells remain in the same state.
-                    (otherwise, _) => otherwise,
-                };
-
-                next[idx] = next_cell;
+            if particle.y >= self.c.height as f32{
+                particle.y = self.c.height as f32;
+                particle.v_y *= -1.0;
             }
-        }
+            else if particle.y <= 0.0 {
+                particle.y = 0.0;
+                particle.v_y *= -1.0;
+            }
 
-        self.cells = next;
+            particle.x += particle.v_x;
+            if particle.x >= self.c.width as f32 {
+                particle.x = self.c.width as f32;
+                particle.v_x *= -1.0;
+            }
+            else if particle.x <= 0.0 {
+                particle.x = 0.0;
+                particle.v_x *= -1.0;
+            }
+
+
+            for p2 in next_particles.iter() {
+                let dx = particle.x - p2.x;
+                let dy = particle.y - p2.y;
+                let dist = (dx*dx + dy*dy).sqrt();
+
+                let opacity_line = self.c.opacity - (dist / (1.0 / self.c.opacity)) / self.c.distance;
+
+                if dist <= self.c.distance {
+                    lines.push(Line { 
+                        p1_x: particle.x,
+                        p2_x: p2.x,
+                        p1_y: particle.y,
+                        p2_y: p2.y,
+                        opacity: opacity_line
+                    })
+                }
+            }
+
+            next_particles.push(particle)
+        }
+        self.lines = lines;
     }
 
-    pub fn new() -> Universe {
+    pub fn new(c: Config) -> Particles {
         utils::set_panic_hook();
 
-        let width = 128;
-        let height = 128;
+        let mut rng = rand::thread_rng();
 
-        let cells = (0..width * height)
-            .map(|i| {
-                if i % 2 == 0 || i % 7 == 0 {
-                    Cell::Alive
-                } else {
-                    Cell::Dead
-                }
-            })
-            .collect();
+        let particles: Vec<Particle> = (0..c.num_particles).map(|_i| {
+            Particle {
+                x: rng.gen_range(0.0..c.width as f32),
+                y: rng.gen_range(0.0..c.height as f32),
+                v_x: rng.gen_range(-0.5..0.5),
+                v_y: rng.gen_range(-0.5..0.5)
+            }
+        }).collect();
 
-        Universe {
-            width,
-            height,
-            cells,
+        Particles {
+            c,
+
+            particles,
+            lines: vec!()
         }
     }
 
     pub fn width(&self) -> u32 {
-        self.width
+        self.c.width
     }
 
     /// Set the width of the universe.
-    ///
-    /// Resets all cells to the dead state.
     pub fn set_width(&mut self, width: u32) {
-        self.width = width;
-        self.cells = (0..width * self.height).map(|_i| Cell::Dead).collect();
+        self.c.width = width;
     }
 
     pub fn height(&self) -> u32 {
-        self.height
+        self.c.height
     }
 
     /// Set the height of the universe.
-    ///
-    /// Resets all cells to the dead state.
     pub fn set_height(&mut self, height: u32) {
-        self.height = height;
-        self.cells = (0..self.width * height).map(|_i| Cell::Dead).collect();
+        self.c.height = height;
     }
 
-    pub fn cells(&self) -> *const Cell {
-        self.cells.as_ptr()
+    pub fn get_num_particles(&self) -> usize {
+        self.particles.len()
     }
 
-    pub fn toggle_cell(&mut self, row: u32, column: u32) {
-        let idx = self.get_index(row, column);
-        self.cells[idx].toggle();
+    pub fn particles(&self) -> *const Particle {
+        self.particles.as_ptr()
+    }
+
+    pub fn get_num_lines(&self) -> usize {
+        self.lines.len()
+    }
+
+    pub fn get_lines(&mut self) -> *const Line {
+        self.lines.as_ptr()
+        // let mut lines: Vec<Line> = vec!();
+
+        // for (i, p1) in self.particles.iter().enumerate() {
+            // for p2 in self.particles.iter().skip(i + 1) {
+                // let dx = p1.x - p2.x;
+                // let dy = p1.y - p2.y;
+                // let dist = (dx*dx + dy*dy).sqrt();
+
+                // let opacity_line = self.c.opacity - (dist / (1.0 / self.c.opacity)) / self.c.distance;
+
+                // if dist <= self.c.distance {
+                    // lines.push(Line { 
+                        // p1_x: p1.x,
+                        // p2_x: p2.x,
+                        // p1_y: p1.y,
+                        // p2_y: p2.y,
+                        // opacity: opacity_line
+                    // })
+                // }
+            // }
+        // }
+        // let lines_ptr = lines.as_ptr();
+
+        // self.lines = lines;
+
+        // lines_ptr
+
+        // var dx = p1.x - p2.x,
+            // dy = p1.y - p2.y,
+            // dist = Math.sqrt(dx*dx + dy*dy);
+
+        // /* draw a line between p1 and p2 if the distance between them is under the config distance */
+        // if(dist <= pJS.particles.line_linked.distance){
+
+          // var opacity_line = pJS.particles.line_linked.opacity - (dist / (1/pJS.particles.line_linked.opacity)) / pJS.particles.line_linked.distance;
+
+          // if(opacity_line > 0){        
+            
+            // /* style */
+            // var color_line = pJS.particles.line_linked.color_rgb_line;
+            // pJS.canvas.ctx.strokeStyle = 'rgba('+color_line.r+','+color_line.g+','+color_line.b+','+opacity_line+')';
+            // pJS.canvas.ctx.lineWidth = pJS.particles.line_linked.width;
+            // pJS.canvas.ctx.lineCap = 'round'; /* performance issue */
+            
+            // /* path */
+            // pJS.canvas.ctx.beginPath();
+            // pJS.canvas.ctx.moveTo(p1.x, p1.y);
+            // pJS.canvas.ctx.lineTo(p2.x, p2.y);
+            // pJS.canvas.ctx.stroke();
+            // pJS.canvas.ctx.closePath();
+
+          // }
+
+        // }
+    }
+
+    pub fn particles_vec(&self) -> Vec<Particle> {
+        self.particles.clone()
     }
 }
 
-impl fmt::Display for Universe {
+impl fmt::Display for Particles {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for line in self.cells.as_slice().chunks(self.width as usize) {
-            for &cell in line {
-                let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
-                write!(f, "{}", symbol)?;
-            }
-            write!(f, "\n")?;
-        }
+        // for line in self.cells.as_slice().chunks(self.c.width as usize) {
+            // for &cell in line {
+                // let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
+                // write!(f, "{}", symbol)?;
+            // }
+            // write!(f, "\n")?;
+        // }
 
         Ok(())
     }

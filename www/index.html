@@ -2,7 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Hello wasm-pack!</title>
+    <title>particles.rs</title>
+    <meta name="description" content="particles.rs is port of particles.js a lightweight JavaScript library for creating particles.">
+    <meta name="author" content="Dospore" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" media="screen" href="css/style.css">
     <style>
      body {
        position: absolute;
@@ -18,13 +22,53 @@
      #fps {
        white-space: pre;
        font-family: monospace;
+       position: absolute;
+       left: 0;
+       top: 0;
+       background: gray;
+     }
+     #particles-rs {
+       width: 100%;
+       height: 100%;
      }
     </style>
+
+    <!-- scripts -->
+    <script type="text/javascript" src="assets/build/dat.gui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="js/lib.js"></script>
+
   </head>
   <body>
-    <button id="play-pause"></button>
     <div id="fps"></div>
-    <canvas id="game-of-life-canvas"></canvas>
     <script src="./bootstrap.js"></script>
+
+    <!-- count particles -->
+    <div class="count-particles">
+      <span class="js-count-particles">--</span> particles
+    </div>
+
+    <!-- particles.js container -->
+    <canvas id="particles-rs"></canvas>
+
+    <!-- scripts -->
+    <script type="module">
+        // import init from '../pkg/particles.js';
+        // import start from './js/app.js';
+        // async function run() {
+          // await init();
+          // start();
+        // }
+        // run();
+    </script>
+
+    <!-- js-->
+    <script src="js/config.js"></script>
+    <script src="js/gui.js"></script>
+    <script src="js/stats.js"></script>
+    <script>
+      loadStats()
+      loadGui()
+    </script>
   </body>
 </html>
