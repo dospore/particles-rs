@@ -19,7 +19,6 @@
   ],
   "dependencies": {
     "copy-webpack-plugin": "5.0.0",
-    "particles-rs": "./pkg",
     "webpack": "^5.89.0",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"

@@ -1,5 +1,14 @@
-import { Particles, Cell, Config } from "particles-rs";
-import { memory } from "particles-rs/particles_rs_bg.wasm";
+let particlesRS;
+
+import("./particles-rs/particles_rs").then(module => {
+  particlesRS = module;
+
+  pRS.fn.retinaInit();
+  pRS.fn.init();
+  pRS.fn.start();
+})
+
+import { memory } from "./particles-rs/particles_rs_bg.wasm";
 
 const pRS = {
   particles: {},
@@ -9,9 +18,6 @@ const pRS = {
   },
   tmp: {}
 }
-
-window.pJS = config;
-// pRS.config = config;
 
 // Give the canvas room for all of our cells and a 1px border
 // around each of them.
@@ -28,15 +34,11 @@ let animationId = null;
 pRS.fn.init = () => {
   config.particles.line_linked.color_rgb_line = hexToRgb(config.particles.line_linked.color);
 
-  const rsConfig = Config.new(
-    config.particles.line_linked.opacity,
-    config.particles.number.value,
-    config.particles.line_linked.distance,
+  pRS.particles = particlesRS.Particles.new(
+    canvas.height,
     canvas.width,
-    canvas.height
+    config
   );
-
-  pRS.particles = Particles.new(rsConfig);
 }
 
 pRS.fn.start = () => {
@@ -90,7 +92,6 @@ pRS.fn.drawCells = () => {
   const numLines = pRS.particles.get_num_lines();
   const linesPtr = pRS.particles.get_lines();
 
-  const halfCell = config.particles.size.value / 2;
   for (let i = 0; i < numLines; i++) {
     let offset = lineSize * i;
     let p = new Float32Array(memory.buffer, linesPtr + offset, 5);
@@ -103,8 +104,8 @@ pRS.fn.drawCells = () => {
       // ctx.lineCap = 'round'; /* performance issue */
 
       ctx.beginPath();
-      ctx.moveTo(p[0] + halfCell, p[2] + halfCell);
-      ctx.lineTo(p[1] + halfCell, p[3] + halfCell);
+      ctx.moveTo(p[0], p[2]);
+      ctx.lineTo(p[1], p[3]);
       ctx.stroke();
       ctx.closePath();
     }

@@ -8,20 +8,6 @@ export enum Cell {
 }
 /**
 */
-export class Config {
-  free(): void;
-/**
-* @param {number} opacity
-* @param {number} num_particles
-* @param {number} distance
-* @param {number} width
-* @param {number} height
-* @returns {Config}
-*/
-  static new(opacity: number, num_particles: number, distance: number, width: number, height: number): Config;
-}
-/**
-*/
 export class Line {
   free(): void;
 }
@@ -38,16 +24,17 @@ export class Particles {
 */
   tick(): void;
 /**
-* @param {Config} c
+* @param {number} height
+* @param {number} width
+* @param {any} obj
 * @returns {Particles}
 */
-  static new(c: Config): Particles;
+  static new(height: number, width: number, obj: any): Particles;
 /**
 * @returns {number}
 */
   width(): number;
 /**
-* Set the width of the universe.
 * @param {number} width
 */
   set_width(width: number): void;
@@ -56,7 +43,6 @@ export class Particles {
 */
   height(): number;
 /**
-* Set the height of the universe.
 * @param {number} height
 */
   set_height(height: number): void;

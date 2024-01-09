@@ -2,8 +2,14 @@ extern crate cfg_if;
 extern crate wasm_bindgen;
 extern crate web_sys;
 extern crate rand;
+extern crate js_sys;
+extern crate serde;
+extern crate serde_json;
+extern crate gloo_utils;
+extern crate gloo_console;
 
 mod utils;
+pub mod config;
 
 use std::fmt;
 use wasm_bindgen::prelude::*;
@@ -68,40 +74,12 @@ impl Particle {
 #[wasm_bindgen]
 #[derive(Default)]
 pub struct Particles {
-    c: Config,
+    c: config::ParticleConfig,
+    height: u32,
+    width: u32,
 
     particles: Vec<Particle>,
     lines: Vec<Line>
-}
-
-#[wasm_bindgen]
-#[derive(Default)]
-pub struct Config {
-    opacity: f32,
-    num_particles: u32,
-    distance: f32,
-    width: u32,
-    height: u32
-}
-
-#[wasm_bindgen]
-impl Config {
-    // TODO parse js object into rust
-    pub fn new(
-        opacity: f32,
-        num_particles: u32,
-        distance: f32,
-        width: u32,
-        height: u32
-    ) -> Self {
-        Config {
-            opacity,
-            num_particles,
-            distance,
-            width,
-            height
-        }
-    }
 }
 
 /// Public methods, exported to JavaScript.
@@ -113,12 +91,20 @@ impl Particles {
         let mut lines: Vec<Line> = vec!();
         let mut next_particles: Vec<&Particle> = vec!();
 
-        for particle in self.particles.iter_mut() {
-            // let mut particle = particle; 
-            particle.y += particle.v_y;
+        let (distance, opacity) = self.get_line_details();
+        let move_enabled = self.c.particles.r#move.enable;
+        let speed = self.c.particles.r#move.speed / 2.0;
 
-            if particle.y >= self.c.height as f32{
-                particle.y = self.c.height as f32;
+        if !move_enabled {
+            return
+        }
+
+        for particle in self.particles.iter_mut() {
+
+            particle.y += speed * particle.v_y;
+
+            if particle.y >= self.height as f32{
+                particle.y = self.height as f32;
                 particle.v_y *= -1.0;
             }
             else if particle.y <= 0.0 {
@@ -126,9 +112,9 @@ impl Particles {
                 particle.v_y *= -1.0;
             }
 
-            particle.x += particle.v_x;
-            if particle.x >= self.c.width as f32 {
-                particle.x = self.c.width as f32;
+            particle.x += speed * particle.v_x;
+            if particle.x >= self.width as f32 {
+                particle.x = self.width as f32;
                 particle.v_x *= -1.0;
             }
             else if particle.x <= 0.0 {
@@ -142,9 +128,9 @@ impl Particles {
                 let dy = particle.y - p2.y;
                 let dist = (dx*dx + dy*dy).sqrt();
 
-                let opacity_line = self.c.opacity - (dist / (1.0 / self.c.opacity)) / self.c.distance;
+                let opacity_line = opacity - (dist / (1.0 / opacity)) / distance;
 
-                if dist <= self.c.distance {
+                if dist <= distance {
                     lines.push(Line { 
                         p1_x: particle.x,
                         p2_x: p2.x,
@@ -160,15 +146,17 @@ impl Particles {
         self.lines = lines;
     }
 
-    pub fn new(c: Config) -> Particles {
+    pub fn new(height: u32, width: u32, obj: JsValue) -> Particles {
         utils::set_panic_hook();
+
+        let c = config::parse_config(obj);
 
         let mut rng = rand::thread_rng();
 
-        let particles: Vec<Particle> = (0..c.num_particles).map(|_i| {
+        let particles: Vec<Particle> = (0..c.particles.number.value).map(|_i| {
             Particle {
-                x: rng.gen_range(0.0..c.width as f32),
-                y: rng.gen_range(0.0..c.height as f32),
+                x: rng.gen_range(0.0..width as f32),
+                y: rng.gen_range(0.0..height as f32),
                 v_x: rng.gen_range(-0.5..0.5),
                 v_y: rng.gen_range(-0.5..0.5)
             }
@@ -176,6 +164,8 @@ impl Particles {
 
         Particles {
             c,
+            height,
+            width,
 
             particles,
             lines: vec!()
@@ -183,21 +173,19 @@ impl Particles {
     }
 
     pub fn width(&self) -> u32 {
-        self.c.width
+        self.width
     }
 
-    /// Set the width of the universe.
     pub fn set_width(&mut self, width: u32) {
-        self.c.width = width;
+        self.width = width;
     }
 
     pub fn height(&self) -> u32 {
-        self.c.height
+        self.height
     }
 
-    /// Set the height of the universe.
     pub fn set_height(&mut self, height: u32) {
-        self.c.height = height;
+        self.height = height;
     }
 
     pub fn get_num_particles(&self) -> usize {
@@ -214,64 +202,17 @@ impl Particles {
 
     pub fn get_lines(&mut self) -> *const Line {
         self.lines.as_ptr()
-        // let mut lines: Vec<Line> = vec!();
-
-        // for (i, p1) in self.particles.iter().enumerate() {
-            // for p2 in self.particles.iter().skip(i + 1) {
-                // let dx = p1.x - p2.x;
-                // let dy = p1.y - p2.y;
-                // let dist = (dx*dx + dy*dy).sqrt();
-
-                // let opacity_line = self.c.opacity - (dist / (1.0 / self.c.opacity)) / self.c.distance;
-
-                // if dist <= self.c.distance {
-                    // lines.push(Line { 
-                        // p1_x: p1.x,
-                        // p2_x: p2.x,
-                        // p1_y: p1.y,
-                        // p2_y: p2.y,
-                        // opacity: opacity_line
-                    // })
-                // }
-            // }
-        // }
-        // let lines_ptr = lines.as_ptr();
-
-        // self.lines = lines;
-
-        // lines_ptr
-
-        // var dx = p1.x - p2.x,
-            // dy = p1.y - p2.y,
-            // dist = Math.sqrt(dx*dx + dy*dy);
-
-        // /* draw a line between p1 and p2 if the distance between them is under the config distance */
-        // if(dist <= pJS.particles.line_linked.distance){
-
-          // var opacity_line = pJS.particles.line_linked.opacity - (dist / (1/pJS.particles.line_linked.opacity)) / pJS.particles.line_linked.distance;
-
-          // if(opacity_line > 0){        
-            
-            // /* style */
-            // var color_line = pJS.particles.line_linked.color_rgb_line;
-            // pJS.canvas.ctx.strokeStyle = 'rgba('+color_line.r+','+color_line.g+','+color_line.b+','+opacity_line+')';
-            // pJS.canvas.ctx.lineWidth = pJS.particles.line_linked.width;
-            // pJS.canvas.ctx.lineCap = 'round'; /* performance issue */
-            
-            // /* path */
-            // pJS.canvas.ctx.beginPath();
-            // pJS.canvas.ctx.moveTo(p1.x, p1.y);
-            // pJS.canvas.ctx.lineTo(p2.x, p2.y);
-            // pJS.canvas.ctx.stroke();
-            // pJS.canvas.ctx.closePath();
-
-          // }
-
-        // }
     }
 
     pub fn particles_vec(&self) -> Vec<Particle> {
         self.particles.clone()
+    }
+
+    fn get_line_details (&mut self) -> (f32, f32) {
+        (
+            self.c.particles.line_linked.distance,
+            self.c.particles.line_linked.opacity,
+        )
     }
 }
 
