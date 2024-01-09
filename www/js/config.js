@@ -128,4 +128,3 @@ config.tmp = {
     // mode_repulse_distance: pJS.interactivity.modes.repulse.distance
   }
 }
-

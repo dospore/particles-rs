@@ -1,5 +1,5 @@
 import { Particles, Cell, Config } from "particles-rs";
-import { memory } from "particles-rs/particles_rs_bg";
+import { memory } from "particles-rs/particles_rs_bg.wasm";
 
 const pRS = {
   particles: {},
@@ -10,7 +10,6 @@ const pRS = {
   tmp: {}
 }
 
-window.pRS = pRS;
 window.pJS = config;
 // pRS.config = config;
 
@@ -252,6 +251,4 @@ canvas.addEventListener("click", event => {
   // pRS.fn.clearPage();
 });
 
-pRS.fn.retinaInit();
-pRS.fn.init();
-pRS.fn.start();
+window.pRS = pRS;

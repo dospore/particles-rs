@@ -142,10 +142,6 @@ var Stats = function () {
 
 };
 
-if ( typeof module === 'object' ) {
-	module.exports = Stats;
-}
-
 function loadStats () {
   var count_particles, stats, update;
   stats = new Stats;

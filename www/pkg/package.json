@@ -12,5 +12,8 @@
   ],
   "module": "particles_rs.js",
   "types": "particles_rs.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./particles_rs.js",
+    "./snippets/*"
+  ]
 }
