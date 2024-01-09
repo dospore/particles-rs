@@ -100,14 +100,14 @@ function loadGui () {
       pRS_GUI.particles.number.value = value;
       return p.update();
     });
-    f.particles.number.add(pRS_GUI.particles.number.density, 'enable').name('density.enable').onChange(function(value) {
-      pRS_GUI.particles.number.density.enable = value;
-      return p.update();
-    });
-    f.particles.number.add(pRS_GUI.particles.number.density, 'value_area', 0, 10000).name('density.value_area').onChange(function(value) {
-      pRS_GUI.particles.number.density.value_area = value;
-      return p.update();
-    });
+    // f.particles.number.add(pRS_GUI.particles.number.density, 'enable').name('density.enable').onChange(function(value) {
+      // pRS_GUI.particles.number.density.enable = value;
+      // return p.update();
+    // });
+    // f.particles.number.add(pRS_GUI.particles.number.density, 'value_area', 0, 10000).name('density.value_area').onChange(function(value) {
+      // pRS_GUI.particles.number.density.value_area = value;
+      // return p.update();
+    // });
     f.particles.color.addColor(pRS_GUI.particles.color, 'value').name('value (single string)').onChange(function(value) {
       pRS_GUI.particles.color.value = value;
       return p.update();
@@ -151,50 +151,50 @@ function loadGui () {
       pRS_GUI.tmp.obj.size_value = value;
       return p.update();
     });
-    f.particles.size.add(pRS_GUI.particles.size, 'random').name('random').onChange(function(value) {
-      pRS_GUI.particles.size.random = value;
-      return p.update();
-    });
-    ff.size_anim.add(pRS_GUI.particles.size.anim, 'enable').name('anim.enable').onChange(function(value) {
-      pRS_GUI.particles.size.anim.enable = value;
-      return p.update();
-    });
+    // f.particles.size.add(pRS_GUI.particles.size, 'random').name('random').onChange(function(value) {
+      // pRS_GUI.particles.size.random = value;
+      // return p.update();
+    // });
+    // ff.size_anim.add(pRS_GUI.particles.size.anim, 'enable').name('anim.enable').onChange(function(value) {
+      // pRS_GUI.particles.size.anim.enable = value;
+      // return p.update();
+    // });
     // ff.size_anim.add(pRS_GUI.tmp.obj, 'size_anim_speed', 0, 300).name('anim.speed').onChange(function(value) {
       // pRS_GUI.tmp.obj.size_anim_speed = value;
       // return p.update();
     // });
-    ff.size_anim.add(pRS_GUI.particles.size.anim, 'size_min', 0, 100).name('anim.size_min').onChange(function(value) {
-      pRS_GUI.particles.size.anim.size_min = value;
-      return p.update();
-    });
-    ff.size_anim.add(pRS_GUI.particles.size.anim, 'sync').name('anim.sync').onChange(function(value) {
-      pRS_GUI.particles.size.anim.sync = value;
-      return p.update();
-    });
-    f.particles.opacity.add(pRS_GUI.particles.opacity, 'value', 0, 1).name('value').onChange(function(value) {
-      pRS_GUI.particles.opacity.value = value;
-      return p.update();
-    });
-    f.particles.opacity.add(pRS_GUI.particles.opacity, 'random').name('random').onChange(function(value) {
-      pRS_GUI.particles.opacity.random = value;
-      return p.update();
-    });
-    ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'enable').name('anim.enable').onChange(function(value) {
-      pRS_GUI.particles.opacity.anim.enable = value;
-      return p.update();
-    });
-    ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'speed', 0, 10).name('anim.speed').onChange(function(value) {
-      pRS_GUI.particles.opacity.anim.speed = value;
-      return p.update();
-    });
-    ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'opacity_min', 0, 1).name('anim.opacity_min').onChange(function(value) {
-      pRS_GUI.particles.opacity.anim.opacity_min = value;
-      return p.update();
-    });
-    ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'sync').name('anim.sync').onChange(function(value) {
-      pRS_GUI.particles.opacity.anim.sync = value;
-      return p.update();
-    });
+    // ff.size_anim.add(pRS_GUI.particles.size.anim, 'size_min', 0, 100).name('anim.size_min').onChange(function(value) {
+      // pRS_GUI.particles.size.anim.size_min = value;
+      // return p.update();
+    // });
+    // ff.size_anim.add(pRS_GUI.particles.size.anim, 'sync').name('anim.sync').onChange(function(value) {
+      // pRS_GUI.particles.size.anim.sync = value;
+      // return p.update();
+    // });
+    // f.particles.opacity.add(pRS_GUI.particles.opacity, 'value', 0, 1).name('value').onChange(function(value) {
+      // pRS_GUI.particles.opacity.value = value;
+      // return p.update();
+    // });
+    // f.particles.opacity.add(pRS_GUI.particles.opacity, 'random').name('random').onChange(function(value) {
+      // pRS_GUI.particles.opacity.random = value;
+      // return p.update();
+    // });
+    // ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'enable').name('anim.enable').onChange(function(value) {
+      // pRS_GUI.particles.opacity.anim.enable = value;
+      // return p.update();
+    // });
+    // ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'speed', 0, 10).name('anim.speed').onChange(function(value) {
+      // pRS_GUI.particles.opacity.anim.speed = value;
+      // return p.update();
+    // });
+    // ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'opacity_min', 0, 1).name('anim.opacity_min').onChange(function(value) {
+      // pRS_GUI.particles.opacity.anim.opacity_min = value;
+      // return p.update();
+    // });
+    // ff.opacity_anim.add(pRS_GUI.particles.opacity.anim, 'sync').name('anim.sync').onChange(function(value) {
+      // pRS_GUI.particles.opacity.anim.sync = value;
+      // return p.update();
+    // });
 
     f.particles.line_linked.add(pRS_GUI.particles.line_linked, 'enable').name('enable_auto').onChange(function(value) {
       pRS_GUI.particles.line_linked.enable = value;
@@ -220,66 +220,70 @@ function loadGui () {
       pRS_GUI.particles.move.enable = value;
       return p.update();
     });
-    f.particles.move.add(pRS_GUI.particles.move, 'direction', ['none', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left', 'top-left']).name('direction').onChange(function(value) {
-      pRS_GUI.particles.move.direction = value;
-      return p.update();
-    });
-    f.particles.move.add(pRS_GUI.particles.move, 'random').name('random').onChange(function(value) {
-      pRS_GUI.particles.move.random = value;
-      return p.update();
-    });
-    f.particles.move.add(pRS_GUI.particles.move, 'straight').name('straight').onChange(function(value) {
-      pRS_GUI.particles.move.straight = value;
-      return p.update();
-    });
+    // f.particles.move.add(pRS_GUI.particles.move, 'direction', ['none', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left', 'top-left']).name('direction').onChange(function(value) {
+      // pRS_GUI.particles.move.direction = value;
+      // return p.update();
+    // });
+    // f.particles.move.add(pRS_GUI.particles.move, 'random').name('random').onChange(function(value) {
+      // pRS_GUI.particles.move.random = value;
+      // return p.update();
+    // });
+    // f.particles.move.add(pRS_GUI.particles.move, 'straight').name('straight').onChange(function(value) {
+      // pRS_GUI.particles.move.straight = value;
+      // return p.update();
+    // });
     f.particles.move.add(pRS_GUI.tmp.obj, 'move_speed', 0, 200).name('speed').onChange(function(value) {
       pRS_GUI.tmp.obj.move_speed = value;
       return p.update();
     });
-    f.particles.move.add(pRS_GUI.particles.move, 'out_mode', ['out', 'bounce']).name('out_mode').onChange(function(value) {
+    // f.particles.move.add(pRS_GUI.particles.move, 'out_mode', ['out', 'bounce']).name('out_mode').onChange(function(value) {
+      // pRS_GUI.particles.move.out_mode = value;
+      // return p.update();
+    // });
+    f.particles.move.add(pRS_GUI.particles.move, 'out_mode', ['bounce']).name('out_mode').onChange(function(value) {
       pRS_GUI.particles.move.out_mode = value;
       return p.update();
     });
-    f.particles.move.add(pRS_GUI.particles.move.attract, 'enable').name('attract.enable').onChange(function(value) {
-      pRS_GUI.particles.move.attract.enable = value;
-      return p.update();
-    });
-    f.particles.move.add(pRS_GUI.particles.move.attract, 'rotateX', 0, 10000).name('attract.rotateX').onChange(function(value) {
-      pRS_GUI.particles.move.attract.rotateX = value;
-      return p.update();
-    });
-    f.particles.move.add(pRS_GUI.particles.move.attract, 'rotateY', 0, 10000).name('attract.rotateY').onChange(function(value) {
-      pRS_GUI.particles.move.attract.rotateY = value;
-      return p.update();
-    });
-    gui_f.interactivity.add(pRS_GUI.interactivity, 'detect_on', ['window', 'canvas']).name('detect_on').onChange(function(value) {
-      pRS_GUI.interactivity.detect_on = value;
-      return p.update();
-    });
-    f.interactivity.events_onhover.add(pRS_GUI.interactivity.events.onhover, 'enable').name('enable').onChange(function(value) {
-      pRS_GUI.interactivity.events.onhover.enable = value;
-      return p.update();
-    });
-    f.interactivity.events_onhover.add(pRS_GUI.interactivity.events.onhover, 'mode', ['grab', 'bubble', 'repulse']).name('mode').onChange(function(value) {
-      pRS_GUI.interactivity.events.onhover.mode = value;
-      return p.update();
-    });
-    f.interactivity.events_onclick.add(pRS_GUI.interactivity.events.onclick, 'enable').name('enable').onChange(function(value) {
-      pRS_GUI.interactivity.events.onclick.enable = value;
-      return p.update();
-    });
-    f.interactivity.events_onclick.add(pRS_GUI.interactivity.events.onclick, 'mode', ['push', 'remove', 'bubble', 'repulse']).name('mode').onChange(function(value) {
-      pRS_GUI.interactivity.events.onclick.mode = value;
-      return p.update();
-    });
+    // f.particles.move.add(pRS_GUI.particles.move.attract, 'enable').name('attract.enable').onChange(function(value) {
+      // pRS_GUI.particles.move.attract.enable = value;
+      // return p.update();
+    // });
+    // f.particles.move.add(pRS_GUI.particles.move.attract, 'rotateX', 0, 10000).name('attract.rotateX').onChange(function(value) {
+      // pRS_GUI.particles.move.attract.rotateX = value;
+      // return p.update();
+    // });
+    // f.particles.move.add(pRS_GUI.particles.move.attract, 'rotateY', 0, 10000).name('attract.rotateY').onChange(function(value) {
+      // pRS_GUI.particles.move.attract.rotateY = value;
+      // return p.update();
+    // });
+    // gui_f.interactivity.add(pRS_GUI.interactivity, 'detect_on', ['window', 'canvas']).name('detect_on').onChange(function(value) {
+      // pRS_GUI.interactivity.detect_on = value;
+      // return p.update();
+    // });
+    // f.interactivity.events_onhover.add(pRS_GUI.interactivity.events.onhover, 'enable').name('enable').onChange(function(value) {
+      // pRS_GUI.interactivity.events.onhover.enable = value;
+      // return p.update();
+    // });
+    // f.interactivity.events_onhover.add(pRS_GUI.interactivity.events.onhover, 'mode', ['grab', 'bubble', 'repulse']).name('mode').onChange(function(value) {
+      // pRS_GUI.interactivity.events.onhover.mode = value;
+      // return p.update();
+    // });
+    // f.interactivity.events_onclick.add(pRS_GUI.interactivity.events.onclick, 'enable').name('enable').onChange(function(value) {
+      // pRS_GUI.interactivity.events.onclick.enable = value;
+      // return p.update();
+    // });
+    // f.interactivity.events_onclick.add(pRS_GUI.interactivity.events.onclick, 'mode', ['push', 'remove', 'bubble', 'repulse']).name('mode').onChange(function(value) {
+      // pRS_GUI.interactivity.events.onclick.mode = value;
+      // return p.update();
+    // });
     // fm.grab.add(pRS_GUI.tmp.obj, 'mode_grab_distance', 0, 1500).name('distance').onChange(function(value) {
       // pRS_GUI.tmp.obj.mode_grab_distance = value;
       // return p.update();
     // });
-    fmm.grab_linelinked.add(pRS_GUI.interactivity.modes.grab.line_linked, 'opacity', 0, 1).name('opacity').onChange(function(value) {
-      pRS_GUI.interactivity.modes.grab.line_linked.opacity = value;
-      return p.update();
-    });
+    // fmm.grab_linelinked.add(pRS_GUI.interactivity.modes.grab.line_linked, 'opacity', 0, 1).name('opacity').onChange(function(value) {
+      // pRS_GUI.interactivity.modes.grab.line_linked.opacity = value;
+      // return p.update();
+    // });
     // fm.bubble.add(pRS_GUI.tmp.obj, 'mode_bubble_distance', 0, 1500).name('distance').onChange(function(value) {
       // pRS_GUI.tmp.obj.mode_bubble_distance = value;
       // return p.update();
@@ -288,14 +292,14 @@ function loadGui () {
       // pRS_GUI.tmp.obj.mode_bubble_size = value;
       // return p.update();
     // });
-    fm.bubble.add(pRS_GUI.interactivity.modes.bubble, 'opacity', 0, 1).name('opacity').onChange(function(value) {
-      pRS_GUI.interactivity.modes.bubble.opacity = value;
-      return p.update();
-    });
-    fm.bubble.add(pRS_GUI.interactivity.modes.bubble, 'duration', 0, 10).name('duration (sec)').onChange(function(value) {
-      pRS_GUI.interactivity.modes.bubble.duration = value;
-      return p.update();
-    });
+    // fm.bubble.add(pRS_GUI.interactivity.modes.bubble, 'opacity', 0, 1).name('opacity').onChange(function(value) {
+      // pRS_GUI.interactivity.modes.bubble.opacity = value;
+      // return p.update();
+    // });
+    // fm.bubble.add(pRS_GUI.interactivity.modes.bubble, 'duration', 0, 10).name('duration (sec)').onChange(function(value) {
+      // pRS_GUI.interactivity.modes.bubble.duration = value;
+      // return p.update();
+    // });
     // fm.repulse.add(pRS_GUI.tmp.obj, 'mode_repulse_distance', 0, 1000).name('distance').onChange(function(value) {
       // pRS_GUI.tmp.obj.mode_repulse_distance = value;
       // return p.update();
